@@ -78,12 +78,18 @@ class _signInState extends State<signIn> {
     print("ID FOUND : " + snapshot['id']);
     if (id.text == snapshot['id'] && pw.text == snapshot['pw']) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setBool('loggedIn', true);
+      prefs.setString('id', id.text);
+      prefs.setString('pw', pw.text);
       // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const formPage()),
       );
+      const snackBar = SnackBar(
+        backgroundColor: Colors.green,
+        content: Text('Logged In'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } else {
       const snackBar = SnackBar(
         backgroundColor: Colors.red,

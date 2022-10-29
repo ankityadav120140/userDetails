@@ -17,6 +17,38 @@ class _formPageState extends State<formPage> {
   TextEditingController name = TextEditingController();
   TextEditingController number = TextEditingController();
 
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const formPage(),
+          ),
+        );
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Confiremation"),
+      content: Text("User Added"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   void addCustomer() async {
     DocumentReference ref =
         FirebaseFirestore.instance.collection('users').doc();
@@ -27,16 +59,22 @@ class _formPageState extends State<formPage> {
           'name': name.text,
           'phoneNo': number.text,
         }).then((value) {
-          name.text = '';
-          number.text = '';
+          const snackBar = SnackBar(
+            backgroundColor: Colors.green,
+            content: Text('User Added'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const formPage(),
+            ),
+          );
+          _formkey.currentState?.reset();
+          // showAlertDialog(context);
         });
       }
     });
-    const snackBar = SnackBar(
-      backgroundColor: Colors.green,
-      content: Text('User Added'),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
